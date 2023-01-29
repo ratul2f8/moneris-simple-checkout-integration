@@ -71,6 +71,6 @@
   <app-checkout-confirmation
     [order_value]="this.order_value?.getRawValue() ?? 0"
     [tax_percentage]="this.tax_percentage?.getRawValue() ?? 0"
-    (onCancelCheckout)="toggle_checkout()"
+    (goBackToOrderPage)="toggle_checkout()"
   ></app-checkout-confirmation>
 </div>

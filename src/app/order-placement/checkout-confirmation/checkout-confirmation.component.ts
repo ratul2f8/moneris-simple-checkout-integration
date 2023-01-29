@@ -10,7 +10,7 @@ import { v4 } from "uuid";
 })
 export class CheckoutConfirmationComponent implements OnInit {
   @Output()
-  onCancelCheckout = new EventEmitter();
+  goBackToOrderPage = new EventEmitter();
 
   @Input()
   tax_percentage = 0;
@@ -78,13 +78,14 @@ export class CheckoutConfirmationComponent implements OnInit {
     this.request_state = {
       ...this.initialRequestState,
     };
+    this.order_id = v4();
   }
 
   ngOnInit(): void {
     this.reset_form_state();
   }
 
-  cancelCheckout() {
-    this.onCancelCheckout.emit();
+  goBack() {
+    this.goBackToOrderPage.emit();
   }
 }

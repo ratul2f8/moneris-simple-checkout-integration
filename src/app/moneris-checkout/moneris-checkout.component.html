@@ -1,4 +1,17 @@
 <div style="padding: 1em">
-  <span>Testing checkout page: </span>
+  <div
+    class="alert alert-success"
+    role="alert"
+    *ngIf="this.checkOutData.success"
+  >
+    Transation Successful
+  </div>
+  <div
+    class="alert alert-danger"
+    role="alert"
+    *ngIf="!!this.checkOutData.err?.length"
+  >
+    {{ this.checkOutData.err }}
+  </div>
   <div id="monerisCheckout"></div>
 </div>

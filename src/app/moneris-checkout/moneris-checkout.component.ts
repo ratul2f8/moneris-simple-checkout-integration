@@ -30,52 +30,46 @@ export class MonerisCheckoutComponent implements OnInit {
   @Output()
   goBackCheckoutEvent = new EventEmitter();
 
+  @Output()
+  paymentCompleteEvent = new EventEmitter();
+
   @Input()
   ticket = "";
 
-  private readonly initialCheckoutData = {
-    successs: false,
-    loading: false,
-    err: "",
-  };
-
   public checkOutData = {
-    ...this.initialCheckoutData,
+    success: false,
+    err: "",
   };
   constructor() {}
 
   public resetCheckoutState() {
     this.checkOutData = {
-      ...this.initialCheckoutData,
+      success: false,
+      err: "",
     };
   }
-
-  private startLoading() {
+  private setError(err?: Error) {
     this.checkOutData = {
-      ...this.initialCheckoutData,
-      loading: true,
-    };
-  }
-
-  private setError(err: Error) {
-    this.checkOutData = {
-      ...this.initialCheckoutData,
+      success: false,
       err: err?.message?.length
         ? err.message
-        : "Unable to communicate with moneris",
+        : "Unable to communicate with moneris. Please check console for more info. Reload the page and try again.",
     };
   }
 
   ngOnInit(): void {
+    this.resetCheckoutState();
     //@ts-ignore
     var myCheckout = new monerisCheckout();
     myCheckout.setMode(environment.moneris_mode);
     myCheckout.setCheckoutDiv("monerisCheckout");
-    myCheckout.setCallback("page_loaded", this.myPageLoad);
-    myCheckout.setCallback("cancel_transaction", this.myCancelTransaction);
-    myCheckout.setCallback("error_event", this.myErrorEvent);
+    myCheckout.setCallback("page_loaded", () => this.myPageLoad());
+    myCheckout.setCallback("cancel_transaction", () =>
+      this.myCancelTransaction()
+    );
+    myCheckout.setCallback("error_event", (err: any) => this.myErrorEvent(err));
     // myCheckout.setCallback("payment_receipt", myPaymentReceipt);
-    // myCheckout.setCallback("payment_complete", myPaymentComplete);
+    myCheckout.setCallback("payment_complete", () => this.myPaymentComplete());
     //ticket number goes here
     myCheckout.startCheckout(this.ticket);
   }
@@ -84,12 +78,22 @@ export class MonerisCheckoutComponent implements OnInit {
     console.log("Loaded Moneris");
   }
 
-  private myCancelTransaction(e: any) {
-    console.log("Cancelled Moneris checkout. ");
+  private myCancelTransaction() {
     this.goBackCheckoutEvent.emit();
   }
 
-  private myErrorEvent(e: any) {
-    console.error("Error Moneris: ", e);
+  private myErrorEvent(err: any) {
+    console.error("Error Loading Moneris ");
+    this.setError(err);
+  }
+
+  private myPaymentComplete() {
+    this.checkOutData = {
+      err: "",
+      success: true,
+    };
+    setTimeout(() => {
+      this.paymentCompleteEvent.emit();
+    }, 2000);
   }
 }

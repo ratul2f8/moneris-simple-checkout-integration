@@ -1,4 +1,13 @@
 <div
+  class="alert alert-danger"
+  role="alert"
+  *ngIf="!!this.request_state.error_message?.length"
+  (clik)="this.reset_form_state()"
+>
+  {{ this.request_state.error_message }}
+</div>
+
+<div
   class="card"
   style="width: 25rem"
   *ngIf="!this.request_state.ticket.length"
@@ -40,7 +49,7 @@
       href="#"
       class="btn btn-link"
       [ngClass]="{ disabled: this.request_state.loading }"
-      (click)="this.cancelCheckout()"
+      (click)="this.goBack()"
       >Cancel</a
     >
   </div>
@@ -49,4 +58,6 @@
 <app-moneris-checkout
   *ngIf="!!this.request_state.ticket.length"
   [ticket]="this.request_state.ticket"
+  (goBackCheckoutEvent)="this.reset_form_state()"
+  (paymentCompleteEvent)="this.goBack()"
 ></app-moneris-checkout>

@@ -1,7 +1,6 @@
 import { DOCUMENT, isPlatformServer } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { Inject, Injectable, Optional, PLATFORM_ID } from "@angular/core";
-import { environment } from "src/environments/environment";
 import { IMonerisConfigForm } from "../moneris-config/types/moneris-config.types";
 import {
   IBasicMonerisCheckoutPayload,
