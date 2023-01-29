@@ -1,0 +1,102 @@
+<ng-template #config_modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Manage Moneris Config</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="this.handle_close()"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <form
+      class="config-holder"
+      [formGroup]="moneris_config"
+      (submit)="this.save_changes()"
+    >
+      <div class="mb-3 row" style="width: 100%">
+        <label for="exampleFormControlInput1" class="form-label"
+          >Store ID <i>(store_id)</i></label
+        >
+        <div class="input-group has-validation">
+          <input
+            type="string"
+            [ngClass]="{
+              'form-control': true,
+              'is-invalid': !!this.store_id?.errors
+            }"
+            id="store_id"
+            placeholder="Store ID"
+            formControlName="store_id"
+            aria-describedby="store_id-feedback"
+          />
+          <!-- <div id="store_id-feedback" class="invalid-feedback">
+        {{store_id?.errors?.['required'] ? "Store ID is required" : null}}
+      </div> -->
+        </div>
+      </div>
+
+      <div class="mb-3 row" style="width: 100%">
+        <label for="exampleFormControlInput1" class="form-label"
+          >API Token <i>(api_token)</i></label
+        >
+        <div class="input-group has-validation">
+          <input
+            type="string"
+            [ngClass]="{
+              'form-control': true,
+              'is-invalid': !!this.api_token?.errors
+            }"
+            id="store_id"
+            placeholder="API Token"
+            formControlName="api_token"
+            aria-describedby="api_token-feedback"
+          />
+        </div>
+      </div>
+
+      <div class="mb-3 row" style="width: 100%">
+        <label for="exampleFormControlInput1" class="form-label"
+          >Checkout ID <i>(checkout_id)</i></label
+        >
+        <div class="input-group has-validation">
+          <input
+            type="string"
+            [ngClass]="{
+              'form-control': true,
+              'is-invalid': !!this.checkout_id?.errors
+            }"
+            id="store_id"
+            placeholder="Checkout ID"
+            formControlName="checkout_id"
+            aria-describedby="checkout_id-feedback"
+          />
+        </div>
+      </div>
+    </form>
+
+    <!-- other configs -->
+    <div class="alert alert-dark" role="alert">
+      Current Environment: &nbsp;
+      <i>{{ this.current_env }}</i>
+      <br />
+      <br />
+      Moneris URL: &nbsp;
+      <i>{{ this.current_moneris_url }}</i>
+      <br />
+      <br />
+      Moneris Script Source: &nbsp;
+      <i>{{ this.current_moneris_script }}</i>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-success"
+      (click)="this.save_changes()"
+      [disabled]="!this.moneris_config.valid"
+    >
+      Save Changes
+    </button>
+  </div>
+</ng-template>

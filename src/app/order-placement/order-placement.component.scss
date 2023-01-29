@@ -1,0 +1,21 @@
+.order-placement-holder {
+  height: auto;
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2em;
+}
+.order-data-holder {
+  display: flex;
+  color: white;
+  padding: 2em;
+  gap: 1em;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 20px;
+  background: #2c285c;
+}

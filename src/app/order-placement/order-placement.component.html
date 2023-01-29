@@ -1,0 +1,76 @@
+<form
+  *ngIf="!checkout_confirmation_open"
+  class="order-placement-holder"
+  [formGroup]="order_form"
+  (submit)="toggle_checkout()"
+>
+  <div class="mb-3 row" style="width: 60%">
+    <label for="exampleFormControlInput1" class="form-label">Order Value</label>
+    <div class="input-group has-validation">
+      <input
+        type="number"
+        [ngClass]="{
+          'form-control': true,
+          'is-invalid': !!order_value?.errors
+        }"
+        id="order_value"
+        min="0"
+        max="15"
+        placeholder="Order value"
+        formControlName="order_value"
+        aria-describedby="order-value-feedback"
+      />
+      <div id="order-value-feedback" class="invalid-feedback">
+        {{order_value?.errors?.['max'] ? "Maximum order value is $15" : null}}
+        {{order_value?.errors?.['required'] ? "Order value is required" : null}}
+        {{order_value?.errors?.['min'] ? "Minumum order value is $0" : null}}
+      </div>
+    </div>
+  </div>
+  <div class="mb-3 row" style="width: 60%">
+    <label for="exampleFormControlInput1" class="form-label"
+      >Tax Percentage</label
+    >
+    <div class="input-group has-validation">
+      <input
+        type="number"
+        [ngClass]="{
+          'form-control': true,
+          'is-invalid': !!tax_percentage?.errors
+        }"
+        id="tax_percentage"
+        min="0"
+        max="99"
+        placeholder="Tax percantage"
+        formControlName="tax_percentage"
+        aria-describedby="tax-value-feedback"
+      />
+      <div id="tax-value-feedback" class="invalid-feedback">
+        {{tax_percentage?.errors?.['max'] ? "Maximum tax rate is 99%" : null}}
+        {{tax_percentage?.errors?.['min'] ? "Minumum tax rate is 0%" : null}}
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 row" style="width: 100%; justify-content: center">
+    <button
+      style="width: 40%; text-align: center"
+      [ngClass]="{
+        btn: true,
+        'btn-primary': true,
+        disabled: !order_form.valid
+      }"
+      type="submit"
+    >
+      Generate Order
+    </button>
+  </div>
+</form>
+
+<div *ngIf="checkout_confirmation_open" class="order-placement-holder">
+  <app-checkout-confirmation
+    [order_value]="this.order_value?.getRawValue() ?? 0"
+    [tax_percentage]="this.tax_percentage?.getRawValue() ?? 0"
+    (onCancelCheckout)="toggle_checkout()"
+  ></app-checkout-confirmation>
+</div>

@@ -1,0 +1,21 @@
+<div class="container">
+  <img
+    src="https://img.freepik.com/free-vector/cute-delivery-man-logo-hand-draw-cartoon-art-illustration_56104-696.jpg?w=2000"
+    alt="Avtar"
+    class="rounded-circle mt-4"
+    style="width: 150px"
+  />
+  <button
+    type="button"
+    class="btn btn-dark"
+    style="position: absolute; top: 10px; left: 10px"
+    (click)="this.toggle_config_window()"
+  >
+    Manage Moneris Configs
+  </button>
+  <app-moneris-config
+    *ngIf="this.open_config_window"
+    (on_close)="this.toggle_config_window()"
+  ></app-moneris-config>
+  <router-outlet></router-outlet>
+</div>
