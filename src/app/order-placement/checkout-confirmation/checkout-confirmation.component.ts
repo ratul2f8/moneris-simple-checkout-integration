@@ -18,16 +18,29 @@ export class CheckoutConfirmationComponent implements OnInit {
   order_value = 0;
 
   order_id: string;
-  ticket: string;
+
+  readonly initialRequestState = {
+    error_message: "",
+    success: false,
+    loading: false,
+    ticket: "",
+  };
+
+  request_state = {
+    ...this.initialRequestState,
+  };
 
   constructor(
     private readonly moneris_checkout_service: MonerisCheckoutService
   ) {
     this.order_id = v4();
-    this.ticket = "";
   }
 
   confirmCheckout() {
+    this.request_state = {
+      ...this.initialRequestState,
+      loading: true,
+    };
     this.moneris_checkout_service
       .generateToken({
         tax_percentage: this.tax_percentage,
@@ -36,18 +49,40 @@ export class CheckoutConfirmationComponent implements OnInit {
       })
       .subscribe(
         (res) => {
-          if (res?.response?.ticket?.length) {
-            this.ticket = res?.response?.ticket;
+          if (res?.success) {
+            this.request_state = {
+              ...this.initialRequestState,
+              success: true,
+              ticket: res.ticket,
+            };
+          } else {
+            this.request_state = {
+              ...this.initialRequestState,
+              error_message:
+                "Unable to communicate with moneris.Please check console",
+            };
           }
-          console.error(res);
         },
         (err) => {
           console.error(err);
+          this.request_state = {
+            ...this.initialRequestState,
+            error_message:
+              "Unable to communicate with moneris.Please check browser console",
+          };
         }
       );
   }
 
-  ngOnInit(): void {}
+  reset_form_state() {
+    this.request_state = {
+      ...this.initialRequestState,
+    };
+  }
+
+  ngOnInit(): void {
+    this.reset_form_state();
+  }
 
   cancelCheckout() {
     this.onCancelCheckout.emit();

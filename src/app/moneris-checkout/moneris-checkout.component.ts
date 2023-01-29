@@ -1,5 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { environment } from 'src/environments/environment';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { environment } from "src/environments/environment";
 
 // {
 //   "store_id": "store3",
@@ -22,18 +22,21 @@ import { environment } from 'src/environments/environment';
 //   }
 // }
 @Component({
-  selector: 'app-moneris-checkout',
-  templateUrl: './moneris-checkout.component.html',
-  styleUrls: ['./moneris-checkout.component.scss'],
+  selector: "app-moneris-checkout",
+  templateUrl: "./moneris-checkout.component.html",
+  styleUrls: ["./moneris-checkout.component.scss"],
 })
 export class MonerisCheckoutComponent implements OnInit {
   @Output()
   goBackCheckoutEvent = new EventEmitter();
 
+  @Input()
+  ticket = "";
+
   private readonly initialCheckoutData = {
     successs: false,
     loading: false,
-    err: '',
+    err: "",
   };
 
   public checkOutData = {
@@ -57,7 +60,9 @@ export class MonerisCheckoutComponent implements OnInit {
   private setError(err: Error) {
     this.checkOutData = {
       ...this.initialCheckoutData,
-      err: err?.message?.length ? err.message : 'Unable to communicate with moneris',
+      err: err?.message?.length
+        ? err.message
+        : "Unable to communicate with moneris",
     };
   }
 
@@ -65,26 +70,26 @@ export class MonerisCheckoutComponent implements OnInit {
     //@ts-ignore
     var myCheckout = new monerisCheckout();
     myCheckout.setMode(environment.moneris_mode);
-    myCheckout.setCheckoutDiv('monerisCheckout');
-    myCheckout.setCallback('page_loaded', this.myPageLoad);
-    myCheckout.setCallback('cancel_transaction', this.myCancelTransaction);
-    myCheckout.setCallback('error_event', this.myErrorEvent);
+    myCheckout.setCheckoutDiv("monerisCheckout");
+    myCheckout.setCallback("page_loaded", this.myPageLoad);
+    myCheckout.setCallback("cancel_transaction", this.myCancelTransaction);
+    myCheckout.setCallback("error_event", this.myErrorEvent);
     // myCheckout.setCallback("payment_receipt", myPaymentReceipt);
     // myCheckout.setCallback("payment_complete", myPaymentComplete);
     //ticket number goes here
-    myCheckout.startCheckout('1674832175qsiKenjZcjXqd1xJeMEPwfgRYujErT');
+    myCheckout.startCheckout(this.ticket);
   }
 
   private myPageLoad() {
-    console.log('Loaded Moneris');
+    console.log("Loaded Moneris");
   }
 
   private myCancelTransaction(e: any) {
-    console.log('Cancelled Moneris checkout. ');
+    console.log("Cancelled Moneris checkout. ");
     this.goBackCheckoutEvent.emit();
   }
 
   private myErrorEvent(e: any) {
-    console.error('Error Moneris: ', e);
+    console.error("Error Moneris: ", e);
   }
 }

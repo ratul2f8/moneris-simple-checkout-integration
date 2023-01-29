@@ -11,7 +11,7 @@ import { MonerisConfigModule } from "./moneris-config/moneris-config.module";
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     ReactiveFormsModule,
     AppRoutingModule,
     NgbModule,

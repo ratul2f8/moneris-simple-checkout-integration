@@ -1,4 +1,8 @@
-<div class="card" style="width: 25rem">
+<div
+  class="card"
+  style="width: 25rem"
+  *ngIf="!this.request_state.ticket.length"
+>
   <img
     [src]="'https://media1.giphy.com/media/SsTcO55LJDBsI/giphy.gif'"
     class="card-img-top"
@@ -15,9 +19,34 @@
     </li>
   </ul>
   <div class="card-body">
-    <a href="#" class="btn btn-primary" (click)="this.confirmCheckout()"
-      >Checkout ${{ this.order_value }}</a
+    <a
+      href="#"
+      [ngClass]="{
+        btn: true,
+        'btn-primary': true,
+        disabled: this.request_state.loading
+      }"
+      (click)="this.confirmCheckout()"
     >
-    <a href="#" class="btn btn-link" (click)="this.cancelCheckout()">Cancel</a>
+      <span
+        *ngIf="this.request_state.loading"
+        class="spinner-border spinner-border-sm"
+        role="status"
+        aria-hidden="true"
+      ></span>
+      Checkout ${{ this.order_value }}</a
+    >
+    <a
+      href="#"
+      class="btn btn-link"
+      [ngClass]="{ disabled: this.request_state.loading }"
+      (click)="this.cancelCheckout()"
+      >Cancel</a
+    >
   </div>
 </div>
+
+<app-moneris-checkout
+  *ngIf="!!this.request_state.ticket.length"
+  [ticket]="this.request_state.ticket"
+></app-moneris-checkout>

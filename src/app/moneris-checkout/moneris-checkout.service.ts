@@ -1,6 +1,6 @@
+import { DOCUMENT, isPlatformServer } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable, of, throwError } from "rxjs";
+import { Inject, Injectable, Optional, PLATFORM_ID } from "@angular/core";
 import { environment } from "src/environments/environment";
 import { IMonerisConfigForm } from "../moneris-config/types/moneris-config.types";
 import {
@@ -11,7 +11,26 @@ import {
   providedIn: "root",
 })
 export class MonerisCheckoutService {
-  constructor(private readonly httpClient: HttpClient) {}
+  is_server: Boolean;
+  base_url: string;
+
+  constructor(
+    private readonly httpClient: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    @Optional()
+    @Inject(Request)
+    private request: any,
+    @Inject(DOCUMENT)
+    private document: Document
+  ) {
+    this.is_server = isPlatformServer(platformId);
+
+    if (this.is_server) {
+      this.base_url = this.request?.headers?.referer;
+    } else {
+      this.base_url = this.document.location.origin + "/";
+    }
+  }
 
   public generateToken(params: IMonerisBasicTicketServiceParam) {
     const parsed_config = JSON.parse(
@@ -44,7 +63,7 @@ export class MonerisCheckoutService {
       ).toFixed(2);
       payload = {
         ...payload,
-        txn_total: payload.txn_total + tax_amount,
+        txn_total: String(+payload.txn_total + +tax_amount),
         cart: {
           items: [],
           subtotal: String(total),
@@ -56,15 +75,9 @@ export class MonerisCheckoutService {
         },
       };
     }
-
-    return this.httpClient.post<{ response: { ticket: string } }>(
-      `${environment.moneris_server}`,
-      payload,
-      {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      }
+    return this.httpClient.post<{ ticket: string; success: boolean }>(
+      `${this.base_url + "api/moneris_ticket"}`,
+      payload
     );
   }
 }

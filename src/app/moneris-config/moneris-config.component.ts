@@ -3,7 +3,6 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  OnInit,
   Output,
   ViewChild,
 } from "@angular/core";
@@ -17,7 +16,7 @@ import { IMonerisConfigForm } from "./types/moneris-config.types";
   templateUrl: "./moneris-config.component.html",
   styleUrls: ["./moneris-config.component.scss"],
 })
-export class MonerisConfigComponent implements AfterViewInit, OnInit {
+export class MonerisConfigComponent implements AfterViewInit {
   @Output()
   on_close = new EventEmitter();
 
@@ -52,7 +51,12 @@ export class MonerisConfigComponent implements AfterViewInit, OnInit {
     this.current_moneris_url = environment.moneris_server;
     this.current_moneris_script = environment.moneris_script_src;
   }
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    this.populate_data_from_local_storage();
+    this.open();
+  }
+
+  private populate_data_from_local_storage() {
     try {
       const parsedData = JSON.parse(
         localStorage.getItem("moneris_config") ?? ""
@@ -71,9 +75,6 @@ export class MonerisConfigComponent implements AfterViewInit, OnInit {
     } catch (e) {
       console.error(e);
     }
-  }
-  ngAfterViewInit(): void {
-    this.open();
   }
 
   handle_close() {
